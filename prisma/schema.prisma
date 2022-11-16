@@ -18,7 +18,7 @@ model Product {
   category    String   @default("")
   updatedAt   DateTime @updatedAt
 
-  stocks    Stock[]
+  stocks    Stocks[]
 
   users    User[]   @relation(fields: [usersIds], references: [id])
   usersIds String[] @default([]) @db.ObjectId
@@ -27,7 +27,7 @@ model Product {
 
 }
 
-model Stock {
+model Stocks {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   stock     Int      @default(0)
   size      String   @default("")
