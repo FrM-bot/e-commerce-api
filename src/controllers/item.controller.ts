@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express'
 import {
   insertItemService,
-  getItemService,
-  deleteItemService
+  getItemService
+  // deleteItemService
 } from '../services/item.service.js'
 import { handlerHttpError } from '../utils/error.handler.js'
 
@@ -57,13 +57,13 @@ const updateItemController = async (req: Request, res: Response): Promise<void> 
   }
 }
 
-const deleteItemController = async ({ params }: Request, res: Response): Promise<void> => {
-  try {
-    const data = await deleteItemService({ id: params.id })
-    res.send({ data })
-  } catch (error) {
-    handlerHttpError({ res, error: 'ERROR_DELETE_ITEM', errorRaw: error })
-  }
-}
+// const deleteItemController = async ({ params }: Request, res: Response): Promise<void> => {
+//   try {
+//     const data = await deleteItemService({ id: params.id })
+//     res.send({ data })
+//   } catch (error) {
+//     handlerHttpError({ res, error: 'ERROR_DELETE_ITEM', errorRaw: error })
+//   }
+// }
 
-export { getItemController, postItemController, updateItemController, deleteItemController }
+export { getItemController, postItemController, updateItemController }

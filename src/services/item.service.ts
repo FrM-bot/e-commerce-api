@@ -1,7 +1,7 @@
 import { validateObject } from '../utils/item.validator.js'
 import { db } from '../config/prisma.js'
 import { INewProduct } from '../interfaces/item.interface.js'
-import { deleteFiles } from '../config/cloudinary.js'
+// import { deleteFiles } from '../config/cloudinary.js'
 
 export const insertItemService = async (item: INewProduct): Promise<any | { error: string, status: number }> => {
   try {
@@ -40,28 +40,28 @@ export const insertItemService = async (item: INewProduct): Promise<any | { erro
   }
 }
 
-const getIdFromImageURL = (url: string) => {
-  const id = url.split('/').at(-1)?.split('.').at(0)
-  return id ?? ''
-}
+// const getIdFromImageURL = (url: string) => {
+//   const id = url.split('/').at(-1)?.split('.').at(0)
+//   return id ?? ''
+// }
 
-export const deleteItemService = async ({ id }: { id: string }) => {
-  try {
-    const deletedItem = await db.product.delete({
-      where: {
-        id
-      }
-    })
-    const ids: string[] = deletedItem.images.map(getIdFromImageURL)
-    ids?.length > 0 && deleteFiles(ids)
-    return deletedItem
-  } catch (error: any) {
-    return {
-      error: error.message,
-      status: 500
-    }
-  }
-}
+// export const deleteItemService = async ({ id }: { id: string }) => {
+//   try {
+//     const deletedItem = await db.product.delete({
+//       where: {
+//         id
+//       }
+//     })
+//     const ids: string[] = deletedItem.images.map(getIdFromImageURL)
+//     ids?.length > 0 && deleteFiles(ids)
+//     return deletedItem
+//   } catch (error: any) {
+//     return {
+//       error: error.message,
+//       status: 500
+//     }
+//   }
+// }
 
 export const getItemService = async (id: string) => {
   try {
