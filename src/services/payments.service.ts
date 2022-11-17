@@ -28,14 +28,14 @@ export const payItemService = async (id: string, quantity: number) => {
         status: 404
       }
     }
-    console.log(item, item.images.at(0))
+    console.log(item, item.images[0])
     const body = {
       items: [
         {
           id: item.id,
           title: `${item.product.name} ${item.size} ${item.color} x${quantity ?? 1}`,
           description: item.product.description,
-          picture_url: item.images.at(0),
+          picture_url: item.images[0],
           quantity: Number(quantity) ?? 1,
           currency_id: 'ARS',
           unit_price: item.price
