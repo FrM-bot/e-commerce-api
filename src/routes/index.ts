@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import fs from 'fs'
+import fs from 'node:fs'
 
 const router = Router()
 
