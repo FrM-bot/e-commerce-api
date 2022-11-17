@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { readdirSync } from 'fs'
+import fs from 'fs'
 
 const router = Router()
 
@@ -14,7 +14,7 @@ function removeExtension (fileName: string): string {
   return file
 }
 
-readdirSync(PATH_ROUTER).forEach((fileName) => {
+fs.readdirSync(PATH_ROUTER).forEach((fileName) => {
   const cleanName = removeExtension(fileName)
   if (cleanName !== 'index') {
     import(`./${cleanName}.js`)
