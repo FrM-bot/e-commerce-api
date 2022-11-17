@@ -19,8 +19,8 @@ export const webhooksNotificationsController = async (
   res: Response
 ): Promise<void> => {
   try {
-    const data = await webhooksNotificationsService(req)
-    res.send({ data })
+    const data = await webhooksNotificationsService(req.body)
+    res.status(200).json({ data })
   } catch (error) {
     handlerHttpError({ res, error: 'ERROR_POST_ITEM', errorRaw: error })
   }
