@@ -14,7 +14,7 @@ interface IWebhooksData {
 
 export const webhooksNotificationsService = async (data: IWebhooksData) => {
   try {
-    console.log(data, data.data.id)
+    // console.log(data, data.data.id)
     const paymentInfo: any = await axios.get(
       `https://api.mercadopago.com/v1/payments/${data?.data?.id ?? ''}`,
       {
