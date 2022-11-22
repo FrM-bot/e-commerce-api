@@ -28,7 +28,7 @@ export const payItemService = async (id: string, quantity: number) => {
         status: 404
       }
     }
-    console.log(item, item.images[0])
+
     const body = {
       items: [
         {
@@ -41,6 +41,7 @@ export const payItemService = async (id: string, quantity: number) => {
           unit_price: item.price
         }
       ],
+      notification_url: 'https://e-commence-api.onrender.com/webhooks',
       back_urls: {
         success: `${process.env.CLIENT_URL ?? ''}/success`,
         failure: `${process.env.CLIENT_URL ?? ''}/failure`,
