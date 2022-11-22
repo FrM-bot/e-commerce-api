@@ -30,7 +30,7 @@ export const payItemService = async (id: string, quantity = 1) => {
       }
     }
 
-    if (item?.stock < quantity) {
+    if (item?.stock < Number(quantity)) {
       return {
         error: 'Stock Not avilable',
         status: 406
@@ -44,7 +44,7 @@ export const payItemService = async (id: string, quantity = 1) => {
           title: `${item.product.name} ${item.size} ${item.color} x${quantity ?? 1}`,
           description: item.product.description,
           picture_url: item.images[0],
-          quantity,
+          quantity: Number(quantity),
           currency_id: 'ARS',
           unit_price: item.price
         }
