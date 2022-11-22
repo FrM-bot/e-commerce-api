@@ -39,7 +39,7 @@ export const webhooksNotificationsService = async (data: IWebhooksData) => {
       console.log(stock)
       await db.stocks.update({
         where: {
-          id: stock?.id
+          id: stock.id
         },
         data: {
           stock: stock.stock - Number(product.quantity)

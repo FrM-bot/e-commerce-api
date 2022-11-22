@@ -7,7 +7,7 @@ const URLS_MERCADOPAGO = {
   preferences: 'https://api.mercadopago.com/checkout/preferences'
 }
 
-export const payItemService = async (id: string, quantity: number) => {
+export const payItemService = async (id: string, quantity = 1) => {
   try {
     const item = await db.stocks.findUnique({
       where: {
@@ -30,7 +30,7 @@ export const payItemService = async (id: string, quantity: number) => {
       }
     }
 
-    if (item?.stock === 0) {
+    if (item?.stock < quantity) {
       return {
         error: 'Stock Not avilable',
         status: 406
@@ -44,7 +44,7 @@ export const payItemService = async (id: string, quantity: number) => {
           title: `${item.product.name} ${item.size} ${item.color} x${quantity ?? 1}`,
           description: item.product.description,
           picture_url: item.images[0],
-          quantity: Number(quantity) ?? 1,
+          quantity,
           currency_id: 'ARS',
           unit_price: item.price
         }
