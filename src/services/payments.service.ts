@@ -22,10 +22,18 @@ export const payItemService = async (id: string, quantity: number) => {
         }
       }
     })
+
     if (!item) {
       return {
         error: 'No existe este producto',
         status: 404
+      }
+    }
+
+    if (item?.stock === 0) {
+      return {
+        error: 'Stock Not avilable',
+        status: 406
       }
     }
 
@@ -49,7 +57,9 @@ export const payItemService = async (id: string, quantity: number) => {
       },
       payment_methods: {
         installments: 3
-      }
+      },
+      transaction_amount: Number(item.price),
+      description: item.product.description
     }
     const response = await axios.post(URLS_MERCADOPAGO.preferences, body, {
       headers: {
