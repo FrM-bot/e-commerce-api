@@ -46,7 +46,6 @@ export const webhooksNotificationsService = async (data: IWebhooksData) => {
         }
       })
     })
-    console.log(paymentInfo)
     return data
   } catch (error: any) {
     console.error(error)

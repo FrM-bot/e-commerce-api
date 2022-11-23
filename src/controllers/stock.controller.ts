@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
 import {
-  addStockService
+  addStockService,
+  updateStockService
 } from '../services/stock.service.js'
 import { handlerHttpError } from '../utils/error.handler.js'
 
@@ -21,6 +22,19 @@ export const addStockController = async (
   try {
     console.log({ body, files }, typeof body?.images, file)
     const data = await addStockService({ ...body, files })
+    res.send({ data })
+  } catch (error) {
+    handlerHttpError({ res, error: 'ERROR_POST_ITEM', errorRaw: error })
+  }
+}
+
+export const updateStockController = async (
+  { body, params }: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    console.log(body)
+    const data = await updateStockService(body, params?.id)
     res.send({ data })
   } catch (error) {
     handlerHttpError({ res, error: 'ERROR_POST_ITEM', errorRaw: error })

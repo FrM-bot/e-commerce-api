@@ -4,6 +4,7 @@ import { destFiles } from '../utils/pathFiles.js'
 import { db } from '../config/prisma.js'
 import { validateObject } from '../utils/item.validator.js'
 import { upluadFiles, deleteFiles } from '../config/cloudinary.js'
+import { IStockToUpdate } from 'src/interfaces/stock.interface'
 
 export const addStockService = async (newStock: INewStock) => {
   let imagesUploadIds: string[] = []
@@ -56,6 +57,28 @@ export const addStockService = async (newStock: INewStock) => {
     console.log(error)
     removeFiles(destFiles)
     void deleteFiles(imagesUploadIds)
+    return {
+      error: error.message,
+      status: 500
+    }
+  }
+}
+
+export const updateStockService = async (stock: IStockToUpdate, id: string) => {
+  try {
+    console.log(stock)
+    stock.price && (stock.price = Number(stock.price))
+    stock.stock && (stock.stock = Number(stock.stock))
+    const data = await db.stocks.update({
+      where: {
+        id
+      },
+      data: {
+        ...stock
+      }
+    })
+    return data
+  } catch (error: any) {
     return {
       error: error.message,
       status: 500
