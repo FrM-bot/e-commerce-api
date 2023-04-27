@@ -6,7 +6,7 @@ const payItemController = async ({ body, params }: Request, res: Response): Prom
   try {
     const { quantity } = body
     const { id } = params
-    const data = await payItemService(id, quantity)
+    const data = await payItemService({ id, quantity })
     res.send({ data })
   } catch (error) {
     handlerHttpError({ res, error: 'ERROR_PAY_ITEM', errorRaw: error })

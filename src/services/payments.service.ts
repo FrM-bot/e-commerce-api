@@ -7,9 +7,10 @@ const URLS_MERCADOPAGO = {
   preferences: 'https://api.mercadopago.com/checkout/preferences'
 }
 
-export const payItemService = async (id: string, quantity = 1) => {
+export const payItemService = async ({ id, quantity }: { id: string, quantity: number }) => {
+  console.log(id, quantity)
   try {
-    const item = await db.stocks.findUnique({
+    const item = await db.stock.findUnique({
       where: {
         id
       },
