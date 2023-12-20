@@ -1,8 +1,8 @@
 import { join, parse } from 'node:path'
 import { readdir } from 'node:fs/promises'
-import { NODE_ENV } from '../lib/config/index.js'
+// import { NODE_ENV } from '../lib/config/index.js'
 
-const mainFolder = NODE_ENV === 'production' ? 'dist' : 'src'
+// const mainFolder = NODE_ENV === 'production' ? 'dist' : 'src'
 
 const PATH_ROUTER = join('dist', 'routes')
 

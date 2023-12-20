@@ -6,14 +6,14 @@ const itemSchema = z.object({
   category: z.string({ required_error: 'Category is required', invalid_type_error: 'Category must be a string' }).min(3, { message: 'Minimum category length is 3 characters' }).max(20, { message: 'Maximum category length is 20 characters' })
 })
 
-export async function validateItem (object: object) {
+export async function validateItem (object: any) {
   return await itemSchema.safeParseAsync(object)
 }
 
-export async function validatePartialItem (object: object) {
+export async function validatePartialItem (object: any) {
   return await itemSchema.partial().omit({ category: true }).safeParseAsync(object)
 }
 
-export async function validateCategoryItem (object: object) {
+export async function validateCategoryItem (object: any) {
   return await itemSchema.omit({ description: true, name: true }).safeParseAsync(object)
 }

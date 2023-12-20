@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { type RequestHandler, Router } from 'express'
 import { Token } from '../lib/utils/index.js'
 import { PaymentController } from '../controllers/index.js'
 import type { DatabaseModels } from '../lib/interfaces/index.js'
@@ -12,7 +12,7 @@ const createRouter = ({ Model }: { Model: ModelsRequired }) => {
 
   router.get('/:method/:id', controller.pay)
 
-  router.patch('/:method', Token.middleware, controller.payItems as any)
+  router.patch('/:method', Token.middleware, controller.payItems as unknown as RequestHandler<any, any, Record<string, any>>)
 
   return router
 }

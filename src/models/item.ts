@@ -12,11 +12,11 @@ const defaultWhere = {
 }
 
 interface Props {
-  where?: Object
+  where?: any
 }
 
 class ItemModel {
-  #db
+  readonly #db
 
   constructor ({
     db

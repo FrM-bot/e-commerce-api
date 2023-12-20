@@ -5,15 +5,15 @@ import { validateItem, validatePartialItem } from '../lib/schemas/index.js'
 import { type ModelsRequired } from '../routes/items.js'
 
 export class ItemController {
-  Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
-    this.Model = Model
+    this.#Model = Model
   }
 
   getBy = async ({ params }: Request, res: Response): Promise<void> => {
     try {
       const { id } = params
-      const data = await this.Model.item.getBy({ where: { id } })
+      const data = await this.#Model.item.getBy({ where: { id } })
 
       res.send({
         data
@@ -25,7 +25,7 @@ export class ItemController {
 
   getAll = async (_req: Request, res: Response): Promise<void> => {
     try {
-      const data = await this.Model.item.getAll()
+      const data = await this.#Model.item.getAll()
       console.log(data)
       res.send({
         data
@@ -41,7 +41,7 @@ export class ItemController {
       if (!result.success) {
         return res.json({ error: result.error }).status(400)
       }
-      const data = await this.Model.item.create(result.data)
+      const data = await this.#Model.item.create(result.data)
       res.json({
         data
       })
@@ -58,7 +58,7 @@ export class ItemController {
         return res.json({ error: result.error }).status(400)
       }
 
-      const data = await this.Model.item.edit({ id, input: result.data })
+      const data = await this.#Model.item.edit({ id, input: result.data })
 
       res.json({
         data

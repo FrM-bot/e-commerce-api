@@ -10,7 +10,7 @@ export interface PayloadToken {
 }
 
 export class FavoritesController {
-  #Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
   }
@@ -27,7 +27,7 @@ export class FavoritesController {
       user = await this.#Model.user.getBy({ email })
     } catch (errorRaw) {
       console.error(errorRaw)
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw }); return
     }
 
     if (!user?.favoritesIds) {
@@ -70,15 +70,15 @@ export class FavoritesController {
       user = await this.#Model.user.getBy({ email })
     } catch (errorRaw) {
       console.error(errorRaw)
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw }); return
     }
 
     if (!user?.favoritesIds) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_REMOVE_FAVORITES',
         errorRaw: 'User not found'
-      })
+      }); return
     }
 
     if (!user?.favoritesIds.includes(itemId)) {

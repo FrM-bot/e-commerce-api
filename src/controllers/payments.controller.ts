@@ -7,9 +7,9 @@ import type { PayloadToken } from '../lib/interfaces/index.js'
 import { METHODS } from '../lib/const/index.js'
 
 export class PaymentController {
-  Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
-    this.Model = Model
+    this.#Model = Model
   }
 
   pay = async ({ params, query }: Request, res: Response): Promise<void | Response<any, Record<string, any>>> => {
@@ -18,7 +18,7 @@ export class PaymentController {
     const quantity = Number(query.quantity) ?? 1
     console.log(params, quantity)
     try {
-      const data = await this.Model.stock.getBy({ id })
+      const data = await this.#Model.stock.getBy({ id })
 
       if (!data.product.name || !data.images) {
         return res.send({
@@ -59,30 +59,30 @@ export class PaymentController {
     const { method } = params
     const { addressId } = body as { addressId: string }
 
-    const user = await this.Model.user.getBy({ email: payload?.email })
+    const user = await this.#Model.user.getBy({ email: payload?.email })
 
     if (!user) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_GET_USER',
         errorRaw: "User doesn't exist"
-      })
+      }); return
     }
 
     if (!user?.addresses) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_GET_USER',
         errorRaw: "User address doesn't exist"
-      })
+      }); return
     }
 
     if (!user?.cart) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_GET_USER',
         errorRaw: "User address doesn't exist"
-      })
+      }); return
     }
 
     const selectedAddress = user?.addresses.find(address => address.id === addressId)
@@ -117,7 +117,7 @@ export class PaymentController {
       }
 
       if (!url) {
-        return handlerHttpError({ res, error: 'ERROR_PAY_PRODUCTS', status: 400 })
+        handlerHttpError({ res, error: 'ERROR_PAY_PRODUCTS', status: 400 }); return
       }
 
       res.send({

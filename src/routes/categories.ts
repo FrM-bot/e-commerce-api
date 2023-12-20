@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Router } from 'express'
 import { CategoryController } from '../controllers/index.js'
 import { Token } from '../lib/utils/index.js'
@@ -10,11 +11,11 @@ const createRouter = ({ Model }: { Model: ModelsRequired }) => {
 
   const router = Router()
 
-  router.get('/', Token.middleware, controller.getAll as any)
+  router.get('/', controller.getAll)
 
-  router.patch('/:id', Token.middleware, controller.patch as any)
+  router.patch('/:id', Token.middleware, controller.patch)
 
-  router.delete('/:id', Token.middleware, controller.delete as any)
+  router.delete('/:id', Token.middleware, controller.delete)
 
   return router
 }

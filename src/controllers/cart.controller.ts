@@ -7,7 +7,7 @@ import type { ModelsRequired } from '../routes/cart.js'
 interface ParamQuery { itemId: string }
 
 export class CartController {
-  #Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
   }
@@ -22,11 +22,11 @@ export class CartController {
     const quantity = Number(quantityString)
 
     if (isNaN(quantity) || quantity < 1) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_QUANTITY_IS_NAN',
         errorRaw: 'Error quantity is NaN'
-      })
+      }); return
     }
 
     let user
@@ -34,7 +34,7 @@ export class CartController {
       user = await this.#Model.user.getBy({ email })
     } catch (errorRaw) {
       console.error(errorRaw)
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw }); return
     }
 
     if (!user?.cart || !user.id) {
@@ -79,11 +79,11 @@ export class CartController {
     const quantity = Number(quantityString)
 
     if (isNaN(quantity)) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_QUANTITY_IS_NAN',
         errorRaw: 'Error quantity is NaN'
-      })
+      }); return
     }
 
     let user
@@ -91,11 +91,11 @@ export class CartController {
       user = await this.#Model.user.getBy({ email })
     } catch (errorRaw) {
       console.error(errorRaw)
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw }); return
     }
 
     if (!user.cart) {
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw: 'User doesn\'t exist' })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw: 'User doesn\'t exist' }); return
     }
 
     const cartItem = user.cart.find(({ id }) => itemId === id)
@@ -141,15 +141,15 @@ export class CartController {
       user = await this.#Model.user.getBy({ email })
     } catch (errorRaw) {
       console.error(errorRaw)
-      return handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_GET_USER_DATA', errorRaw }); return
     }
 
     if (!user?.cart || !itemId) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_REMOVE_ITEM_FROM_CART',
         errorRaw: 'User not found'
-      })
+      }); return
     }
 
     const cartItem = user.cart.find(({ id }) => itemId === id)

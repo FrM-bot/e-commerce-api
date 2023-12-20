@@ -3,19 +3,19 @@ import { validateCategoryItem } from '../lib/schemas/index.js'
 import type { ModelsRequired } from '../routes/categories.js'
 
 export class CategoryController {
-  #Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
   }
 
-  async getAll (_req: Request, res: Response): Promise<void> {
+  async getAll (_req: Request, res: Response): Promise<any> {
     const data = await this.#Model.category.getAll()
     res.send({
       data
     })
   }
 
-  async patch ({ body, params }: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
+  async patch ({ body, params }: Request, res: Response): Promise<Response<void, Record<string, any>> | undefined> {
     const id = params.id
     const result = await validateCategoryItem(body)
 

@@ -8,9 +8,9 @@ const stripe = new Stripe(stripeApiKey ?? '', {
 
 class StripeService {
   // example: 20.99 = 20.99 * 100 = 2099
-  #base
-  #currency
-  #service
+  readonly #base
+  readonly #currency
+  readonly #service
   constructor ({ service }: { service: typeof stripe }) {
     this.#base = 100
     this.#currency = 'usd'
@@ -99,7 +99,7 @@ interface MercadoPagoProduct {
 }
 
 class MercadoPago {
-  #apiKey
+  readonly #apiKey
   constructor ({ apiKey }: { apiKey: string }) {
     this.#apiKey = apiKey
   }
@@ -174,7 +174,7 @@ class MercadoPago {
     return responseData
   }
 
-  payMany = async ({ items, email, metadata, applicationFee }: { items: Array<{ id: string, title: string, description: string, picture_url: string, quantity: number, unit_price: number }>, email?: string, metadata?: Object, applicationFee?: number }) => {
+  payMany = async ({ items, email, metadata, applicationFee }: { items: Array<{ id: string, title: string, description: string, picture_url: string, quantity: number, unit_price: number }>, email?: string, metadata?: Record<string, string | number | null> | undefined, applicationFee?: number }) => {
     const transactionAmount = items.reduce((total, { unit_price: unitPrice }) => (total + unitPrice), 0)
 
     const body = {

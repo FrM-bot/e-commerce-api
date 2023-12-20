@@ -1,9 +1,9 @@
 import { db } from '../lib/config/index.js'
 import type { Database } from '../lib/interfaces/index.js'
-import { PROVIDER } from '../lib/const/index.js'
+import type { PROVIDER } from '../lib/const/index.js'
 
 class UserModel {
-  #db: Database
+  readonly #db: Database
   constructor ({ db }: { db: Database }) {
     this.#db = db
   }

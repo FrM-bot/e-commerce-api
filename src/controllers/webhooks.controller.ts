@@ -1,23 +1,26 @@
 import type { Request, Response } from 'express'
-import { ModelsRequired } from '@routes/auth.js'
+import type { ModelsRequired } from '../routes/auth.js'
 import { mercadopagoEndpoints, handlerHttpError } from '../lib/utils/index.js'
 import { mercadopago } from '../lib/config/index.js'
 import axios from 'axios'
 
 export class WebhooksController {
-  #Model
+  readonly #Model
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
   }
 
-  post = async ({ body }: Request, res: Response): Promise<void> => {
+  post = async (
+    { body }: Request,
+    res: Response
+  ): Promise<any | Response<any, Record<string, any>>> => {
     const { data } = body
     if (!data?.id) {
-      return handlerHttpError({
+      handlerHttpError({
         res,
         error: 'ERROR_AUTH_USER',
         errorRaw: 'No payment data'
-      })
+      }); return
     }
     const options = {
       headers: {
@@ -25,15 +28,26 @@ export class WebhooksController {
       }
     }
     const response = await axios.get(
-      mercadopagoEndpoints.getPayment(data.id),
+      mercadopagoEndpoints.getPayment(data?.id as string),
       options
     )
 
     const transactionData = await response.data
 
-    const { transaction_details: transactionDetails, additional_info: additionalInfo, metadata, status } = transactionData
+    const {
+      transaction_details: transactionDetails,
+      additional_info: additionalInfo,
+      metadata,
+      status
+    } = transactionData
 
-    console.log(response, transactionData, metadata, transactionDetails, additionalInfo)
+    console.log(
+      response,
+      transactionData,
+      metadata,
+      transactionDetails,
+      additionalInfo
+    )
 
     res.send({
       data: {

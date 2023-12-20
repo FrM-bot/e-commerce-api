@@ -2,7 +2,7 @@ import { db } from '../lib/config/index.js'
 import type { Database } from '../lib/interfaces/database.js'
 
 class StockModel {
-  #db: Database
+  readonly #db: Database
   constructor ({ db }: { db: Database }) {
     this.#db = db
   }

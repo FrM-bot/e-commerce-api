@@ -6,13 +6,13 @@ import { readFile } from 'node:fs/promises'
 import { clientUrl } from '../lib/config/index.js'
 import { type ModelsRequired } from '../routes/users.js'
 import { PROVIDER } from '../lib/const/index.js'
-import { PayloadToken } from '../lib/interfaces/index.js'
+import type { PayloadToken } from '../lib/interfaces/index.js'
 
 const createAccountButton = ({ href, text }: { href: string, text: string }) =>
   `<a class="button" href=${href}>${text}</a>`
 
 export class UserController {
-  #Model
+  readonly #Model
   providers: string[]
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
@@ -69,7 +69,7 @@ export class UserController {
       try {
         existUser = await this.#Model.user.exist({ email })
       } catch (errorRaw) {
-        return handlerHttpError({ res, error: 'ERROR_VERIFY_USER', errorRaw })
+        handlerHttpError({ res, error: 'ERROR_VERIFY_USER', errorRaw }); return
       }
       if (!existUser.exist) {
         try {
@@ -78,11 +78,11 @@ export class UserController {
             provider
           })
         } catch (errorRaw) {
-          return handlerHttpError({
+          handlerHttpError({
             res,
             error: 'ERROR_REGISTER_USER',
             errorRaw
-          })
+          }); return
         }
       }
       return res.send(responseData)
@@ -95,7 +95,7 @@ export class UserController {
   ): Promise<void | Response<any, Record<string, any>>> => {
     const { email } = payload
     const user = await this.#Model.user.getBy({ email })
-    if (!user) return handlerHttpError({ res, error: 'ERROR_VERIFY_USER', errorRaw: '' })
+    if (!user) { handlerHttpError({ res, error: 'ERROR_VERIFY_USER', errorRaw: '' }); return }
 
     const { cart, favoritesIds, payments, addresses, ...userData } = user
     const favorites = await this.#Model.item.getAll({

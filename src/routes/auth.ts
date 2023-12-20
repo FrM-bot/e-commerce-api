@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { AuthController } from '../controllers/index.js'
-import { DatabaseModels } from '../lib/interfaces/index.js'
+import { type DatabaseModels } from '../lib/interfaces/index.js'
 
 export type ModelsRequired = Pick<DatabaseModels, 'user' >
 

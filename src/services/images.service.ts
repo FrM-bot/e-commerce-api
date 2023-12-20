@@ -2,8 +2,8 @@ import { parse } from 'node:path'
 import { v2 as Cloudinary, type UploadApiResponse, type DeleteApiResponse } from 'cloudinary'
 
 export class ImageService {
-  #service
-  #folder = 'items'
+  readonly #service
+  readonly #folder = 'items'
   constructor ({ service }: { service: typeof Cloudinary }) {
     this.#service = service
   }
