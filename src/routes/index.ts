@@ -1,55 +1,43 @@
-import { Router } from 'express'
+import { join, parse } from 'node:path'
+import { readdir } from 'node:fs/promises'
+import { NODE_ENV } from '@lib/config'
 
-import path from 'node:path'
+const mainFolder = NODE_ENV === 'production' ? 'dist' : 'src'
 
-import fs from 'node:fs/promises'
+const PATH_ROUTER = join(mainFolder, 'routes')
 
-const router = Router()
-
-const { pathname } = new URL('./', import.meta.url)
-const rootPath = pathname.slice(1)
-
-const PATH_ROUTER = `${rootPath}`
-
-console.log({ PATH_ROUTER, pathname })
-
-function removeExtension (fileName: string): string {
-  const file = fileName.split('.')[0]
-  return file
+function removeExtension (fileName: string) {
+  const { name, ext } = parse(fileName)
+  return {
+    name,
+    ext
+  }
 }
 
 async function readFiles (path: string) {
   try {
-    const files = await fs.readdir(path)
-    console.log({ files })
+    const files = await readdir(path)
     return files
   } catch (error: any) {
     console.error(error)
   }
 }
 
-void readFiles(path.join('dist', 'routes')).then(files => {
-  files?.forEach((fileName) => {
-    const cleanName = removeExtension(fileName)
-    if (cleanName !== 'index') {
-      import(`./${cleanName}.js`)
-        .then(moduleRouter => {
-          console.log(`Se está cargando la ruta: /${cleanName}`)
-          router.use(`/${cleanName}`, moduleRouter.router)
-        }).catch(console.error)
+const files = await readFiles(PATH_ROUTER) ?? []
+
+let Routes: Array<{ path: string, createRouter: ({ Model: { ...Model } }) => any }> = []
+
+for (const fileName of files) {
+  const { name } = removeExtension(fileName)
+  if (name !== 'index') {
+    const routeModule = await import(`./${fileName}`)
+    if (routeModule?.createRouter) {
+      Routes = Routes.concat({
+        path: `/${name}`,
+        createRouter: routeModule.createRouter
+      })
     }
-  })
-})
+  }
+}
 
-// fs.readdirSync(PATH_ROUTER).forEach((fileName) => {
-//   const cleanName = removeExtension(fileName)
-//   if (cleanName !== 'index') {
-//     import(`./${cleanName}.js`)
-//       .then(moduleRouter => {
-//         console.log(`Se está cargando la ruta: /${cleanName}`)
-//         router.use(`/${cleanName}`, moduleRouter.router)
-//       }).catch(console.error)
-//   }
-// })
-
-export { router }
+export { Routes }

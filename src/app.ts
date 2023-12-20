@@ -1,36 +1,34 @@
 import 'dotenv/config'
-import cors from 'cors'
 import Express from 'express'
-import { router } from './routes/index.js'
+import { Routes } from '@src/routes'
+import { corsMiddleware } from '@src/middlewares'
+import { type DatabaseModels } from '@lib/interfaces'
 
-const app = Express()
+export const createApp = ({ Models, mode = 'development', port = 3001 }: { Models: DatabaseModels, mode?: string, port?: number }) => {
+  const app = Express()
 
-// const whitelist = ['http://localhost:3002']
+  app.disable('X-Powered-By')
 
-// const origin = (requestOrigin: string | undefined, callback) => {
-//   console.log(requestOrigin, whitelist.includes(requestOrigin ?? ''))
-//   if (whitelist.includes(requestOrigin ?? '')) {
-//     callback(null, true)
-//   } else {
-//     callback(new Error('Not allowed by CORS'))
-//   }
-// }
+  app.use(corsMiddleware())
 
-app.use(
-  cors({
-    // origin
+  app.use(Express.static('public'))
+
+  app.use(Express.json())
+
+  console.log('Paths:')
+  for (const { path, createRouter } of Routes) {
+    console.log('- ', path)
+    app.use(path, createRouter({ Model: { ...Models } }))
+  }
+
+  app.use('/mode', (req, res) => {
+    res.send({
+      data: mode
+    })
   })
-)
 
-app.use(Express.static('public'))
-
-app.use(Express.json())
-
-app.use(router)
-
-const port = process.env.PORT ?? 3001
-
-app.listen(port, () => {
-  console.log(process.env.PORT, 'Port')
-  console.log(`App listen on: http://localhost:${port}`)
-})
+  app.listen(port, () => {
+    console.log(`App listen on: http://localhost:${port}`)
+    console.log(`Mode: ${mode}`)
+  })
+}

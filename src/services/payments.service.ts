@@ -1,95 +1,238 @@
-import { db } from '../config/prisma.js'
 import axios from 'axios'
+import { stripeApiKey, mercadopago, clientUrl } from '@lib/config'
+import Stripe from 'stripe'
 
-// preferences: Genera una preferencia con la información de un producto o servicio y obtén la URL necesaria para iniciar el flujo de pago.
+const stripe = new Stripe(stripeApiKey ?? '', {
+  apiVersion: '2023-08-16'
+})
 
-const URLS_MERCADOPAGO = {
-  preferences: 'https://api.mercadopago.com/checkout/preferences'
+class StripeService {
+  // example: 20.99 = 20.99 * 100 = 2099
+  #base
+  #currency
+  #service
+  constructor ({ service }: { service: typeof stripe }) {
+    this.#base = 100
+    this.#currency = 'usd'
+    this.#service = service
+  }
+
+  async pay ({
+    name,
+    quantity,
+    unitAmount,
+    images
+  }: {
+    name: string
+    quantity: number
+    unitAmount: number
+    images: string[]
+  }) {
+    const session = await this.#service.checkout.sessions.create({
+      line_items: [
+        {
+          price_data: {
+            currency: this.#currency,
+            product_data: {
+              name,
+              images
+            },
+            unit_amount: unitAmount * this.#base
+          },
+          quantity
+        }
+      ],
+      mode: 'payment',
+      success_url: `${clientUrl}/success`,
+      cancel_url: `${clientUrl}/cancel`
+    })
+    return session
+  }
+
+  async payMany ({
+    items,
+    metadata
+  }: {
+    items: Array<{
+      name: string
+      quantity: number
+      unitAmount: number
+      images: string[]
+    }>
+    metadata: any
+  }) {
+    const session = await this.#service.checkout.sessions.create({
+      line_items: items.map(({ images, name, quantity, unitAmount }) => ({
+        price_data: {
+          currency: this.#currency,
+          product_data: {
+            name,
+            images
+          },
+          unit_amount: unitAmount * this.#base
+        },
+        quantity
+      })),
+      mode: 'payment',
+      success_url: `${clientUrl}/success`,
+      cancel_url: `${clientUrl}/cancel`,
+      metadata
+    })
+    return session
+  }
 }
 
-export const payItemService = async ({ id, quantity }: { id: string, quantity: number }) => {
-  console.log(id, quantity)
-  try {
-    const item = await db.stock.findUnique({
-      where: {
-        id
-      },
-      include: {
-        product: {
-          select: {
-            name: true,
-            description: true
-          }
-        }
-      }
-    })
+// const StripeService = {
+// }
 
-    if (!item) {
-      return {
-        error: 'No existe este producto',
-        status: 404
-      }
-    }
+interface MercadoPagoProduct {
+  id: string
+  title: string
+  description: string
+  pictureUrl: string
+  quantity: number
+  unitPrice: number
+  transactionAmount: number
+  email?: string
+  metadata?: object
+  applicationFee?: number
+}
 
-    if (item?.stock < Number(quantity)) {
-      return {
-        error: 'Stock Not avilable',
-        status: 406
-      }
-    }
+class MercadoPago {
+  #apiKey
+  constructor ({ apiKey }: { apiKey: string }) {
+    this.#apiKey = apiKey
+  }
 
+  pay = async ({
+    id,
+    title,
+    description,
+    pictureUrl,
+    quantity,
+    unitPrice,
+    transactionAmount,
+    email,
+    metadata,
+    applicationFee
+  }: MercadoPagoProduct) => {
     const body = {
       items: [
         {
-          id: item.id,
-          title: `${item.product.name} ${item.size} ${item.color} x${quantity ?? 1}`,
-          description: item.product.description,
-          picture_url: item.images[0],
-          quantity: Number(quantity),
-          currency_id: 'ARS',
-          unit_price: item.price
+          id,
+          title,
+          description,
+          picture_url: pictureUrl,
+          quantity,
+          unit_price: unitPrice,
+          currency_id: 'USD'
         }
       ],
-      notification_url: 'https://e-commence-api.onrender.com/webhooks',
+      notification_url: '',
       back_urls: {
-        success: `${process.env.CLIENT_URL ?? ''}/success`,
-        failure: `${process.env.CLIENT_URL ?? ''}/failure`,
-        pending: `${process.env.CLIENT_URL ?? ''}/pending`
+        success: `${clientUrl}/cause/${id}`,
+        failure: `${clientUrl}/cause/${id}`,
+        pending: `${clientUrl}/cause/${id}`
       },
       payment_methods: {
         installments: 3
       },
-      transaction_amount: Number(item.price),
-      description: item.product.description
+      transaction_amount: transactionAmount,
+      description,
+      payer: {
+        phone: {
+          area_code: '',
+          number: 0
+        },
+        address: {
+          zip_code: '',
+          street_name: '',
+          street_number: null
+        },
+        email,
+        identification: {
+          number: '',
+          type: ''
+        },
+        name: '',
+        surname: '',
+        date_created: null,
+        last_purchase: null
+      },
+      metadata,
+      application_fee: applicationFee
     }
-    const response = await axios.post(URLS_MERCADOPAGO.preferences, body, {
+    const response = await axios.post(mercadopago.urls.preferences, body, {
       headers: {
-        Authorization: `Bearer ${process.env.ACCESS_TOKEN ?? ''}`,
+        Authorization: `Bearer ${this.#apiKey}`,
         'Content-Type': 'application/json'
       }
     })
+
     const responseData = await response.data
+
     return responseData
-  } catch (error: any) {
-    return {
-      error: error.message,
-      status: 500
+  }
+
+  payMany = async ({ items, email, metadata, applicationFee }: { items: Array<{ id: string, title: string, description: string, picture_url: string, quantity: number, unit_price: number }>, email?: string, metadata?: Object, applicationFee?: number }) => {
+    const transactionAmount = items.reduce((total, { unit_price: unitPrice }) => (total + unitPrice), 0)
+
+    const body = {
+      items,
+      notification_url: '',
+      back_urls: {
+        success: `${clientUrl}/purchases`,
+        failure: `${clientUrl}/purchases`,
+        pending: `${clientUrl}/purchases`
+      },
+      payment_methods: {
+        installments: 3
+      },
+      transaction_amount: transactionAmount,
+      description: items.map((item) => item.title).join(' '),
+      payer: {
+        phone: {
+          area_code: '',
+          number: 0
+        },
+        address: {
+          zip_code: '',
+          street_name: '',
+          street_number: null
+        },
+        email,
+        identification: {
+          number: '',
+          type: ''
+        },
+        name: '',
+        surname: '',
+        date_created: null,
+        last_purchase: null
+      },
+      metadata
+      // application_fee: applicationFee
     }
+    const response = await axios.post(mercadopago.urls.preferences, body, {
+      headers: {
+        Authorization: `Bearer ${this.#apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    const responseData = await response.data
+
+    return responseData
   }
 }
 
-interface PayItems {
-  id: string
-  quantity: number
-}
+const stripeService = new StripeService({ service: stripe })
 
-export const payItemsService = async (items: PayItems[]) => {
-  try {
-    console.log(items)
-  } catch (error: any) {
-    return {
-      error: error.message,
-      status: 500
-    }
-  }
+const mercadopagoService = new MercadoPago({
+  apiKey: mercadopago.accessToken ?? ''
+})
+
+export const Payment = {
+  stripe: stripeService,
+  mercadopago: mercadopagoService
 }

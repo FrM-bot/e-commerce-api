@@ -1,11 +1,20 @@
 import { Router } from 'express'
+import { Token } from '@lib/utils'
+import { PaymentController } from '@src/controllers'
+import type { DatabaseModels } from '@lib/interfaces'
 
-import { payItemController, payItemsController } from '../controllers/payments.controller.js'
+export type ModelsRequired = Pick<DatabaseModels, 'stock' | 'user' >
 
-const router = Router()
+const createRouter = ({ Model }: { Model: ModelsRequired }) => {
+  const controller = new PaymentController({ Model })
 
-router.post('/:id', payItemController)
+  const router = Router()
 
-router.post('/', payItemsController)
+  router.get('/:method/:id', controller.pay)
 
-export { router }
+  router.patch('/:method', Token.middleware, controller.payItems as any)
+
+  return router
+}
+
+export { createRouter }

@@ -1,23 +1,32 @@
-import type { Request, Response } from 'express'
-import { handlerHttpError } from '../utils/error.handler.js'
-import { loginUserService, registerUserService } from '../services/auth.service.js'
+/* eslint-disable @typescript-eslint/no-invalid-void-type */
+import { type Request, type Response } from 'express'
+import { handlerHttpError } from '@lib/utils'
+import { ModelsRequired } from '@routes/auth.js'
 
-export const registerController = async (req: Request, res: Response) => {
-  try {
-    console.log(req.headers)
-    const data = await registerUserService(req.body)
-    res.send({ data })
-  } catch (error) {
-    handlerHttpError({ res, error: 'ERROR_GET_ITEM', errorRaw: error })
+export class AuthController {
+  #Model
+  constructor ({ Model }: { Model: ModelsRequired }) {
+    this.#Model = Model
   }
-}
 
-export const loginController = async (req: Request, res: Response) => {
-  try {
-    console.log(req.headers)
-    const data = await loginUserService(req.body)
-    res.send({ data })
-  } catch (error) {
-    handlerHttpError({ res, error: 'ERROR_GET_ITEM', errorRaw: error })
+  authUser = async ({ body }: Request, res: Response): Promise<void> => {
+    const { email, password } = body
+    console.log(password)
+    if (!email) return handlerHttpError({ res, error: 'ERROR_LOGIN' })
+    try {
+      const user = await this.#Model.user.getBy({ email })
+
+      if (!user) {
+        return handlerHttpError({ res, error: 'ERROR_GET_STOCK', errorRaw: 'User does\'t exist' })
+      }
+
+      res.send({
+        data: {
+          token: user.email
+        }
+      })
+    } catch (error) {
+      handlerHttpError({ res, error: 'ERROR_AUTH_USER', errorRaw: error })
+    }
   }
 }

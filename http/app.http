@@ -1,0 +1,72 @@
+@hostname = localhost
+@port = 3002
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+@productID = 6514bc2fe74b88e1fc5b4e24
+
+@stockID = 6514c394f138615e1d3c3c3f
+
+@categoryID = 6514bc2fe74b88e1fc5b4e23
+
+### Get All Items
+GET http://{{host}}/items HTTP/1.1
+Content-Type: {{contentType}}
+### Post Item
+POST http://{{host}}/items HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "name": "Remera",
+    "description": "Remera manga corta",
+    "category": "shirt"
+}
+### Edit item
+PATCH  http://{{host}}/items/{{productID}} HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "name": "Remera editada"
+}
+### Get Item
+GET http://{{host}}/items/{{productID}} HTTP/1.1
+Content-Type: {{contentType}}
+### Edit stock
+PATCH  http://{{host}}/stocks/{{stockID}} HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "price": 25.99
+}
+### Delete image stock
+PATCH  http://{{host}}/stocks/images/remove/{{stockID}} HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "imagesToRemove": [
+        "https://res.cloudinary.com/dxkry5nri/image/upload/v1695512369/items/igm8n8rbbeugonitaike.png"
+    ]
+}
+### Get Stock
+GET http://{{host}}/stocks/{{stockID}} HTTP/1.1
+Content-Type: {{contentType}}
+
+### Get Categories
+GET http://{{host}}/categories HTTP/1.1
+Content-Type: {{contentType}}
+
+### Edit Category
+PATCH http://{{host}}/categories/{{categoryID}} HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "category": "T Shirt"
+}
+
+### Register user
+POST http://{{host}}/users/register/email HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "email": "damianmaciel0@gmail.com"
+}

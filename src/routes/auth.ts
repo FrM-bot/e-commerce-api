@@ -1,12 +1,17 @@
 import { Router } from 'express'
-import { loginController, registerController } from '../controllers/auth.controller.js'
+import { AuthController } from '@src/controllers'
+import { DatabaseModels } from '@lib/interfaces'
 
-const router = Router()
+export type ModelsRequired = Pick<DatabaseModels, 'user' >
 
-// http://localhost:3002/auth/login [post]
-router.post('/login', loginController)
+const createRouter = ({ Model }: { Model: ModelsRequired }) => {
+  const controller = new AuthController({ Model })
 
-// http://localhost:3002/auth/register [post]
-router.post('/register', registerController)
+  const router = Router()
 
-export { router }
+  router.patch('/login', controller.authUser)
+
+  return router
+}
+
+export { createRouter }

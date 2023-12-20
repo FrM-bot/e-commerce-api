@@ -1,12 +1,23 @@
 import { Router } from 'express'
-import { getItemsByIdController, getItemsController } from '../controllers/items.controller.js'
-// import { upload } from '../middleware/multer.js'
+import { ItemController } from '@src/controllers'
+import { DatabaseModels } from '@lib/interfaces'
 
-const router = Router()
+export type ModelsRequired = Pick<DatabaseModels, 'item' >
 
-// http://localhost:3002/items
-router.post('/', getItemsByIdController)
+const createRouter = ({ Model }: { Model: ModelsRequired }) => {
+  const controller = new ItemController({ Model })
 
-router.get('/', getItemsController)
+  const router = Router()
 
-export { router }
+  router.get('/:id', controller.getBy)
+
+  router.patch('/:id', controller.edit)
+
+  router.get('/', controller.getAll)
+
+  router.post('/', controller.post)
+
+  return router
+}
+
+export { createRouter }

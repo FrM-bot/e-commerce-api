@@ -1,17 +1,16 @@
 import { Router } from 'express'
-import { webhooksNotificationsController } from '../controllers/webhooks.controller.js'
+import { WebhooksController } from '@src/controllers'
+import type { UserModel, ItemModel } from '@lib/interfaces'
 
-const router = Router()
+interface ModelUserRouterRequired { user: UserModel, item: ItemModel }
 
-// http://localhost:3002/item
-router.post('/', webhooksNotificationsController)
+const createRouter = ({ Model }: { Model: ModelUserRouterRequired }) => {
+  const controller = new WebhooksController({ Model })
+  const router = Router()
 
-// router.get('/:id', getItemController)
+  router.post('/mercadolibre', controller.post as any)
 
-// router.get('/:name', getItemByNameController)
+  return router
+}
 
-// router.delete('/:id', deleteItemController)
-
-// router.put('/:id', updateItemController)
-
-export { router }
+export { createRouter, ModelUserRouterRequired }

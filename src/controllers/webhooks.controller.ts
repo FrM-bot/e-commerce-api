@@ -1,27 +1,44 @@
 import type { Request, Response } from 'express'
-import {
-  webhooksNotificationsService
-} from '../services/webhooks.service.js'
-import { handlerHttpError } from '../utils/error.handler.js'
+import { ModelsRequired } from '@routes/auth.js'
+import { mercadopagoEndpoints, handlerHttpError } from '@lib/utils'
+import { mercadopago } from '@lib/config'
+import axios from 'axios'
 
-// export const addStockController = async ({ params }: Request, res: Response): Promise<void> => {
-//   try {
-//     const { id } = params
-//     const data = await addStockService(id)
-//     res.send({ data })
-//   } catch (error) {
-//     handlerHttpError({ res, error: 'ERROR_GET_ITEM', errorRaw: error })
-//   }
-// }
+export class WebhooksController {
+  #Model
+  constructor ({ Model }: { Model: ModelsRequired }) {
+    this.#Model = Model
+  }
 
-export const webhooksNotificationsController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const data = await webhooksNotificationsService(req.body)
-    res.status(200).json({ data })
-  } catch (error) {
-    handlerHttpError({ res, error: 'ERROR_POST_ITEM', errorRaw: error })
+  post = async ({ body }: Request, res: Response): Promise<void> => {
+    const { data } = body
+    if (!data?.id) {
+      return handlerHttpError({
+        res,
+        error: 'ERROR_AUTH_USER',
+        errorRaw: 'No payment data'
+      })
+    }
+    const options = {
+      headers: {
+        Authorization: `Bearer ${mercadopago.accessToken ?? ''}`
+      }
+    }
+    const response = await axios.get(
+      mercadopagoEndpoints.getPayment(data.id),
+      options
+    )
+
+    const transactionData = await response.data
+
+    const { transaction_details: transactionDetails, additional_info: additionalInfo, metadata, status } = transactionData
+
+    console.log(response, transactionData, metadata, transactionDetails, additionalInfo)
+
+    res.send({
+      data: {
+        status
+      }
+    })
   }
 }

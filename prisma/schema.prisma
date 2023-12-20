@@ -10,46 +10,117 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Product {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String   @default("") @unique
-  description String   @default("")
-  timeStamp   DateTime @default(now())
-  category    String   @default("")
-  updatedAt   DateTime @updatedAt
+model Category {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique @default("")
 
-  stocks    Stocks[]
+  Product Product[]
 
-  users    User[]   @relation(fields: [usersIds], references: [id])
-  usersIds String[] @default([]) @db.ObjectId
-
-  purchasesIds String[] @default([]) @db.ObjectId
-
+  @@map("categories")
 }
 
-model Stocks {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  stock     Int      @default(0)
-  size      String   @default("")
-  color     String   @default("")
-  price     Float    @default(0)
-  images    String[] @default([])
-  product   Product  @relation(fields: [productId], references: [id])
-  productId String   @db.ObjectId
+model Product {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique @default("")
+  description String   @default("")
+  timeStamp   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @default("") @db.ObjectId
+
+  Stock Stock[]
+
+  @@map("products")
+}
+
+model Stock {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  quantity Int    @default(0)
+  size     String
+
+  color String @default("")
+
+  price Float @default(0)
+
+  images String[] @default([])
+
+  Product   Product @relation(fields: [productId], references: [id])
+  productId String  @db.ObjectId
+
+  Cart    Cart[]
+  Payment Payment?
+
+  @@map("stocks")
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  email    String @unique
-  password String
-  name     String @default("")
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String  @unique
+  name     String? @default("")
+  surname  String? @default("")
+  provider String  @default("email")
 
-  products    Product[] @relation(fields: [productsIds], references: [id])
-  productsIds String[]  @default([]) @db.ObjectId
+  Payment Payment[]
 
-  purchasesIds String[] @default([]) @db.ObjectId
+  Address Address[]
 
-  bookmarksIds String[] @default([]) @db.ObjectId
+  favoritesIds String[] @db.ObjectId
 
-  cartIds String[] @default([]) @db.ObjectId
+  Cart Cart[]
+
+  @@map("users")
+}
+
+model Address {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  city  String
+  state String
+
+  code         String
+  mainStreet   String
+  streetNumber Int?
+  streetOne    String?
+  streetTwo    String?
+  floor        String?
+  phone        String
+  addressType  String
+  description  String?
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+
+  @@map("addresses")
+}
+
+model Cart {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+
+  Stock   Stock  @relation(fields: [stockId], references: [id])
+  stockId String @db.ObjectId @unique
+
+  quantity Int
+
+  @@map("cart")
+}
+
+model Payment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+
+  Stock   Stock  @relation(fields: [stockId], references: [id])
+  stockId String @unique @db.ObjectId
+
+  createdAt DateTime @default(now())
+
+  quantity Int
+
+  amount Float
+
+  @@map("payments")
 }
