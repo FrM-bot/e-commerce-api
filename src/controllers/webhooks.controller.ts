@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express'
 import { ModelsRequired } from '@routes/auth.js'
-import { mercadopagoEndpoints, handlerHttpError } from '@lib/utils'
-import { mercadopago } from '@lib/config'
+import { mercadopagoEndpoints, handlerHttpError } from '../lib/utils/index.js'
+import { mercadopago } from '../lib/config/index.js'
 import axios from 'axios'
 
 export class WebhooksController {

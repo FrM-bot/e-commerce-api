@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { Token } from '@lib/utils'
-import { PaymentController } from '@src/controllers'
-import type { DatabaseModels } from '@lib/interfaces'
+import { Token } from '../lib/utils/index.js'
+import { PaymentController } from '../controllers/index.js'
+import type { DatabaseModels } from '../lib/interfaces/index.js'
 
 export type ModelsRequired = Pick<DatabaseModels, 'stock' | 'user' >
 

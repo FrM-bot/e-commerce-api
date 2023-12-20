@@ -1,10 +1,10 @@
 import { join, parse } from 'node:path'
 import { readdir } from 'node:fs/promises'
-import { NODE_ENV } from '@lib/config'
+import { NODE_ENV } from '../lib/config/index.js'
 
 const mainFolder = NODE_ENV === 'production' ? 'dist' : 'src'
 
-const PATH_ROUTER = join(mainFolder, 'routes')
+const PATH_ROUTER = join('dist', 'routes')
 
 function removeExtension (fileName: string) {
   const { name, ext } = parse(fileName)

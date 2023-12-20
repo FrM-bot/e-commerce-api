@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { StockController } from '@src/controllers'
-import { upload } from '@src/middlewares'
-import type { DatabaseModels } from '@lib/interfaces'
+import { StockController } from '../controllers/index.js'
+import { upload } from '../middlewares/index.js'
+import type { DatabaseModels } from '../lib/interfaces/index.js'
 
 export type ModelsRequired = Pick<DatabaseModels, 'stock' >
 

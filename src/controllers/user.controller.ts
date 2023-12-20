@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import { type Request, type Response } from 'express'
-import { handlerHttpError, Token } from '@lib/utils'
-import { Email } from '@services/email.service.js'
+import { handlerHttpError, Token } from '../lib/utils/index.js'
+import { Email } from '../services/email.service.js'
 import { readFile } from 'node:fs/promises'
-import { clientUrl } from '@lib/config'
-import { type ModelsRequired } from '@routes/users.js'
-import { PROVIDER } from '@lib/const'
-import { PayloadToken } from '@lib/interfaces'
+import { clientUrl } from '../lib/config/index.js'
+import { type ModelsRequired } from '../routes/users.js'
+import { PROVIDER } from '../lib/const/index.js'
+import { PayloadToken } from '../lib/interfaces/index.js'
 
 const createAccountButton = ({ href, text }: { href: string, text: string }) =>
   `<a class="button" href=${href}>${text}</a>`

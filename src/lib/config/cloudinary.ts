@@ -1,5 +1,5 @@
 import { v2 as Cloudinary } from 'cloudinary'
-import { removeFile } from '@lib/utils'
+import { removeFile } from '../utils/index.js'
 
 Cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import { type Request, type Response } from 'express'
-import { handlerHttpError } from '@lib/utils'
-import { type ModelsRequired } from '@routes/favorites.js'
+import { handlerHttpError } from '../lib/utils/index.js'
+import { type ModelsRequired } from '../routes/favorites.js'
 
 export interface PayloadToken {
   payload: {

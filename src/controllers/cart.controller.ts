@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import { type Request, type Response } from 'express'
-import { handlerHttpError } from '@lib/utils'
-import { PayloadToken } from '@lib/interfaces'
-import { ModelsRequired } from '@routes/cart.js'
+import { handlerHttpError } from '../lib/utils/index.js'
+import type { PayloadToken } from '../lib/interfaces/index.js'
+import type { ModelsRequired } from '../routes/cart.js'
 
 interface ParamQuery { itemId: string }
 

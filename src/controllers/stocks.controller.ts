@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import type { Request, Response, Express } from 'express'
-import { handlerHttpError, Files } from '@lib/utils'
-import { validatePartialStock, validateStock } from '@lib/schemas'
-import { Uploader } from '@services/images.service.js'
+import { handlerHttpError, Files } from '../lib/utils/index.js'
+import { validatePartialStock, validateStock } from '../lib/schemas/index.js'
+import { Uploader } from '../services/images.service.js'
 // import { Files } from '@lib/utils'
-import type { ModelsRequired } from '@routes/stocks.js'
+import type { ModelsRequired } from '../routes/stocks.js'
 
 export class StockController {
   Model

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import { type Request, type Response } from 'express'
-import { handlerHttpError } from '@lib/utils'
-import { ModelsRequired } from '@routes/auth.js'
+import { handlerHttpError } from '../lib/utils/index.js'
+import { ModelsRequired } from '../routes/auth.js'
 
 export class AuthController {
   #Model

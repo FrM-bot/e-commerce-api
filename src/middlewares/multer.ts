@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 
 import multer from 'multer'
 
-import { destFiles } from '@lib/utils'
+import { destFiles } from '../lib/utils/index.js'
 
 const storage = multer.diskStorage({
   destination: destFiles,

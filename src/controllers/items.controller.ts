@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import { type Request, type Response } from 'express'
-import { handlerHttpError } from '@lib/utils'
-import { validateItem, validatePartialItem } from '@lib/schemas'
-import type { ModelsRequired } from '@routes/items.js'
+import { handlerHttpError } from '../lib/utils/index.js'
+import { validateItem, validatePartialItem } from '../lib/schemas/index.js'
+import { type ModelsRequired } from '../routes/items.js'
 
 export class ItemController {
   Model

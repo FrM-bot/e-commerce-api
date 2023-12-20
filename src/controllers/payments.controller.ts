@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
 import type { Request, Response } from 'express'
-import { handlerHttpError } from '@lib/utils'
-import { Payment } from '@services/payments.service.js'
-import type { ModelsRequired } from '@routes/payments.js'
-import type { PayloadToken } from '@lib/interfaces'
-import { METHODS } from '@lib/const'
+import { handlerHttpError } from '../lib/utils/index.js'
+import { Payment } from '../services/payments.service.js'
+import type { ModelsRequired } from '../routes/payments.js'
+import type { PayloadToken } from '../lib/interfaces/index.js'
+import { METHODS } from '../lib/const/index.js'
 
 export class PaymentController {
   Model

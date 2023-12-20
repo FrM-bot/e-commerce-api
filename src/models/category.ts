@@ -1,5 +1,5 @@
-import { db } from '@lib/config'
-import type { Database } from '@lib/interfaces'
+import { db } from '../lib/config/index.js'
+import type { Database } from '../lib/interfaces/index.js'
 
 class CategoryModel {
   #db: Database

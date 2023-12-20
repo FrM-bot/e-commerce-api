@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { JWT_SECRET } from '@lib/config'
+import { JWT_SECRET } from '../config/index.js'
 // const day = 60 * 60 * 24
 // const expirationDays = 7
 //   expiresIn: expiresIn || day * expirationDays

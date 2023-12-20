@@ -1,6 +1,6 @@
-import { db } from '@lib/config'
-import type { Database } from '@lib/interfaces'
-import { PROVIDER } from '@lib/const'
+import { db } from '../lib/config/index.js'
+import type { Database } from '../lib/interfaces/index.js'
+import { PROVIDER } from '../lib/const/index.js'
 
 class UserModel {
   #db: Database

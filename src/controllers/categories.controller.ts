@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
-import { validateCategoryItem } from '@lib/schemas'
-import { ModelsRequired } from '@routes/categories.js'
+import { validateCategoryItem } from '../lib/schemas/index.js'
+import type { ModelsRequired } from '../routes/categories.js'
 
 export class CategoryController {
   #Model

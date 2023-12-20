@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { stripeApiKey, mercadopago, clientUrl } from '@lib/config'
+import { stripeApiKey, mercadopago, clientUrl } from '../lib/config/index.js'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(stripeApiKey ?? '', {
-  apiVersion: '2023-08-16'
+  apiVersion: '2023-10-16'
 })
 
 class StripeService {

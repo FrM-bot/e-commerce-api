@@ -1,8 +1,8 @@
 import 'dotenv/config'
 import Express from 'express'
-import { Routes } from '@src/routes'
-import { corsMiddleware } from '@src/middlewares'
-import { type DatabaseModels } from '@lib/interfaces'
+import { Routes } from './routes/index.js'
+import { corsMiddleware } from './middlewares/index.js'
+import type { DatabaseModels } from './lib/interfaces/index.js'
 
 export const createApp = ({ Models, mode = 'development', port = 3001 }: { Models: DatabaseModels, mode?: string, port?: number }) => {
   const app = Express()

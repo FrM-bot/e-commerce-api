@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import { FavoritesController } from '@src/controllers'
-import { Token } from '@lib/utils'
-import type { DatabaseModels } from '@lib/interfaces'
+import { FavoritesController } from '../controllers/index.js'
+import { Token } from '../lib/utils/index.js'
+import type { DatabaseModels } from '../lib/interfaces/index.js'
 
 export type ModelsRequired = Pick<DatabaseModels, 'user' >
 
