@@ -45,7 +45,7 @@ export class StockController {
       await Files.deleteMany({ filePaths })
     } catch (errorRaw) {
       await Files.deleteMany({ filePaths })
-      return handlerHttpError({ res, error: 'ERROR_UPLOAD_IMAGES', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw }); return
     }
 
     try {
@@ -61,7 +61,7 @@ export class StockController {
         response?.images && await Uploader.deleteMany({
           imagesUrls: response?.images
         })
-        return res.json({ error: result.error }).status(400)
+        handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
       }
       const data = await this.Model.stock.add({ id, input: result.data })
       res.json({
@@ -73,7 +73,7 @@ export class StockController {
       response?.images && await Uploader.deleteMany({
         imagesUrls: response?.images
       })
-      return handlerHttpError({ res, error: 'ERROR_ADD_STOCK', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw })
     }
   }
 
@@ -89,7 +89,7 @@ export class StockController {
       const result = await validatePartialStock(body)
 
       if (!result.success) {
-        return res.json({ error: result.error }).status(400)
+        handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
       }
 
       const data = await this.Model.stock.edit({ id, input: result.data })
@@ -120,7 +120,7 @@ export class StockController {
     try {
       await Uploader.deleteMany({ imagesUrls: imagesToRemove })
     } catch (errorRaw) {
-      return handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES', errorRaw }); return
     }
     try {
       const imagesToSave = stock.images?.filter(
@@ -137,7 +137,7 @@ export class StockController {
         deleted: imagesToRemove
       })
     } catch (errorRaw) {
-      return handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES_FROM_STOCK', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES_FROM_STOCK', errorRaw })
     }
   }
 
@@ -174,7 +174,7 @@ export class StockController {
       })
     } catch (errorRaw) {
       await Files.deleteMany({ filePaths })
-      return handlerHttpError({ res, error: 'ERROR_UPLOAD_IMAGES', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_UPLOAD_IMAGES', errorRaw })
     }
   }
 
@@ -195,7 +195,7 @@ export class StockController {
     try {
       stock?.images && await Uploader.deleteMany({ imagesUrls: stock.images })
     } catch (errorRaw) {
-      return handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_DELETE_IMAGES', errorRaw }); return
     }
     try {
       const { status } = await this.Model.stock.delete({
@@ -205,7 +205,7 @@ export class StockController {
         status: status ? 'success' : 'failed'
       })
     } catch (errorRaw) {
-      return handlerHttpError({ res, error: 'ERROR_DELETE_STOCK', errorRaw })
+      handlerHttpError({ res, error: 'ERROR_DELETE_STOCK', errorRaw })
     }
   }
 }

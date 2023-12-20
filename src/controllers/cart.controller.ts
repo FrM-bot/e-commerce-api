@@ -15,7 +15,7 @@ export class CartController {
   addCart = async (
     { params, payload, query }: Request & PayloadToken,
     res: Response
-  ): Promise<void | Response<any, Record<string, any>>> => {
+  ): Promise<void | Response<void, Record<string, any>>> => {
     const { itemId } = params as unknown as ParamQuery
     const { email } = payload
     const { quantity: quantityString } = query

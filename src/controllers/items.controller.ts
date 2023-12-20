@@ -39,7 +39,7 @@ export class ItemController {
     try {
       const result = await validateItem(body)
       if (!result.success) {
-        return res.json({ error: result.error }).status(400)
+        handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
       }
       const data = await this.#Model.item.create(result.data)
       res.json({
@@ -55,7 +55,7 @@ export class ItemController {
     try {
       const result = await validatePartialItem(body)
       if (!result.success) {
-        return res.json({ error: result.error }).status(400)
+        handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
       }
 
       const data = await this.#Model.item.edit({ id, input: result.data })

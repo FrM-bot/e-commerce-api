@@ -11,12 +11,14 @@ export class AddressController {
     this.#Model = Model
   }
 
-  add = async ({ body, payload }: Request & PayloadToken, res: Response): Promise<void | Response<any, Record<string, any>>> => {
+  add = async ({ body, payload }: Request & PayloadToken, res: Response): Promise<void | Response<void, Record<string, any>>> => {
     if (!payload) { handlerHttpError({ res, error: 'TOKEN_ERROR' }); return }
 
     const result = await validateAddress(body.data)
 
-    if (!result.success) { handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result.error }); return }
+    if (!result.success) {
+      handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
+    }
     const user = await this.#Model.user.getBy({ email: payload.email })
     if (!user?.id) { handlerHttpError({ res, error: 'USER_NOT_FOUND' }); return }
 
