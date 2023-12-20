@@ -30,7 +30,7 @@ const upload = multer({
     console.log({ extType, mineTypes })
 
     if (mineTypes && extType) {
-      return callback(null, true)
+      callback(null, true); return
     }
     // new Error('Solo se admiten imagenes')
     callback(null, false)

@@ -1,11 +1,14 @@
 import cors from 'cors'
+import { clientUrl, NODE_ENV } from '../lib/env/index.js'
 
-const ACCEPTED_ORIGINS = {
+const Origins = {
   development: ['http://localhost:4321'],
-  production: ['http://localhost:4321']
+  production: [clientUrl]
 }
 
-const whitelist = ACCEPTED_ORIGINS.development
+type AcceptedOrigins = keyof typeof Origins
+
+const whitelist = Origins[NODE_ENV as AcceptedOrigins]
 
 export const corsMiddleware = ({ acceptedOrigins = whitelist } = {}) =>
   cors({

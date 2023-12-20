@@ -1,4 +1,5 @@
-import { type RequestHandler, Router } from 'express'
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { Router } from 'express'
 import { Token } from '../lib/utils/index.js'
 import { PaymentController } from '../controllers/index.js'
 import type { DatabaseModels } from '../lib/interfaces/index.js'
@@ -12,7 +13,7 @@ const createRouter = ({ Model }: { Model: ModelsRequired }) => {
 
   router.get('/:method/:id', controller.pay)
 
-  router.patch('/:method', Token.middleware, controller.payItems as unknown as RequestHandler<any, any, Record<string, any>>)
+  router.patch('/:method', Token.middleware, controller.payItems as any)
 
   return router
 }

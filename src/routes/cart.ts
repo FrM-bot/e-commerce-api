@@ -1,4 +1,6 @@
-import { type RequestHandler, Router } from 'express'
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+
+import { Router } from 'express'
 import { CartController } from '../controllers/index.js'
 import { Token } from '../lib/utils/index.js'
 import type { DatabaseModels } from '../lib/interfaces/index.js'
@@ -10,11 +12,11 @@ const createRouter = ({ Model }: { Model: ModelsRequired }) => {
 
   const router = Router()
 
-  router.put('/add/:itemId', Token.middleware, controller.addCart as unknown as RequestHandler<any, any, Record<string, any>>)
+  router.put('/add/:itemId', Token.middleware, controller.addCart as any)
 
-  router.patch('/:itemId', Token.middleware, controller.editCart as unknown as RequestHandler<any, any, Record<string, any>>)
+  router.patch('/:itemId', Token.middleware, controller.editCart as any)
 
-  router.delete('/remove/:itemId', Token.middleware, controller.removeCart as unknown as RequestHandler<any, any, Record<string, any>>)
+  router.delete('/remove/:itemId', Token.middleware, controller.removeCart as any)
 
   return router
 }

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { stripeApiKey, mercadopago, clientUrl } from '../lib/config/index.js'
+import { stripeApiKey, mercadopago, clientUrl } from '../lib/env/index.js'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(stripeApiKey ?? '', {

@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt'
 
 class PasswordEncrypt {
-  #encrypt
-  #saltOrRounds
+  readonly #encrypt
+  readonly #saltOrRounds
   constructor ({ encrypt }: { encrypt: typeof bcrypt }) {
     this.#encrypt = encrypt
     this.#saltOrRounds = 10

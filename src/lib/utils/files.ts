@@ -8,9 +8,9 @@ export const Files = {
       console.error(error)
     }
   },
-  async deleteMany ({ filePaths }: { filePaths: string[] }) {
+  async deleteMany ({ filePaths }: { filePaths: string[] }): Promise<void> {
     try {
-      const promises = filePaths.map(async path => await this.delete({ path }))
+      const promises = filePaths.map(async path => { await this.delete({ path }) })
       await Promise.all(promises)
     } catch (error) {
       console.error(error)

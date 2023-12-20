@@ -1,19 +1,19 @@
 import type { NextFunction, Request, Response } from 'express'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { JWT_SECRET } from '../config/index.js'
+import jwt, { type JwtPayload } from 'jsonwebtoken'
+import { JWT_SECRET } from '../env/index.js'
 // const day = 60 * 60 * 24
 // const expirationDays = 7
 //   expiresIn: expiresIn || day * expirationDays
 class TokenService {
-  #lib
-  #secret
+  readonly #lib
+  readonly #secret
   constructor ({ lib, secret }: { lib: typeof jwt, secret?: string }) {
     this.#lib = lib
     this.#secret = secret
   }
 
   // expressed in seconds --> default is 5 minutes
-  create = ({ payload, options = { expiresIn: 60 * 5 } }: { payload: string | Object, options?: jwt.SignOptions }): string => {
+  create = ({ payload, options = { expiresIn: 60 * 5 } }: { payload: string | object, options?: jwt.SignOptions }): string => {
     if (!this.#secret) throw Error('Not secret provided')
     const hashedPassword = this.#lib.sign(payload, this.#secret, options)
     return hashedPassword
@@ -30,7 +30,7 @@ class TokenService {
     req: Request & { payload?: string | JwtPayload },
     res: Response,
     next: NextFunction
-  ) => {
+  ): Response<any, Record<string, any>> | undefined => {
     const auth = req.get('authorization')
 
     if (!auth) return res.status(401).json({ error: 'Token not exists' })

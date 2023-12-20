@@ -1,4 +1,4 @@
-import { Models } from '../../models/index.js'
+import { type Models } from '../../models/index.js'
 
 export type ItemModel = typeof Models.item
 

@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express'
 
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { type JwtPayload } from 'jsonwebtoken'
 
 export default (
   req: Request & { userId?: string | JwtPayload },

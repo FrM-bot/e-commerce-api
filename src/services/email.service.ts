@@ -1,4 +1,4 @@
-import { APP_PASS, USER_EMAIL } from '../lib/config/index.js'
+import { APP_PASS, USER_EMAIL } from '../lib/env/index.js'
 import nodemailer from 'nodemailer'
 
 export class EmailService {
