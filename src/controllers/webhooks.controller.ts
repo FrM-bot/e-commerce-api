@@ -16,7 +16,7 @@ export class WebhooksController {
     console.log({ body })
 
     if (type === 'test') {
-      res.send({
+      return res.send({
         data: {
           success: true
         }
