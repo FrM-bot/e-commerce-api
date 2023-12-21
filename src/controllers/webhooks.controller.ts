@@ -10,20 +10,26 @@ export class WebhooksController {
     this.#Model = Model
   }
 
-  post = async (
-    { body }: Request,
-    res: Response
-  ) => {
-    const { data } = body
+  post = async ({ body }: Request, res: Response) => {
+    const { data, type } = body
 
     console.log({ body })
+
+    if (type === 'test') {
+      res.send({
+        data: {
+          success: true
+        }
+      })
+    }
 
     if (!data?.id) {
       handlerHttpError({
         res,
         error: 'NO_PAYMENT_DATA',
         errorRaw: 'No payment data'
-      }); return
+      })
+      return
     }
     try {
       const options = {
