@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import 'dotenv/config'
 import Express from 'express'
 import { Routes } from './routes/index.js'

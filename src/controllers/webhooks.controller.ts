@@ -13,46 +13,57 @@ export class WebhooksController {
   post = async (
     { body }: Request,
     res: Response
-  ): Promise<any | Response<any, Record<string, any>>> => {
+  ) => {
     const { data } = body
+
+    console.log({ body })
+
     if (!data?.id) {
       handlerHttpError({
         res,
-        error: 'ERROR_AUTH_USER',
+        error: 'NO_PAYMENT_DATA',
         errorRaw: 'No payment data'
       }); return
     }
-    const options = {
-      headers: {
-        Authorization: `Bearer ${mercadopago.accessToken ?? ''}`
+    try {
+      const options = {
+        headers: {
+          Authorization: `Bearer ${mercadopago.accessToken ?? ''}`
+        }
       }
-    }
-    const response = await axios.get(
-      mercadopagoEndpoints.getPayment(data?.id as string),
-      options
-    )
+      const response = await axios.get(
+        mercadopagoEndpoints.getPayment(data?.id as string),
+        options
+      )
 
-    const transactionData = await response.data
+      const transactionData = await response.data
 
-    const {
-      transaction_details: transactionDetails,
-      additional_info: additionalInfo,
-      metadata,
-      status
-    } = transactionData
-
-    console.log(
-      response,
-      transactionData,
-      metadata,
-      transactionDetails,
-      additionalInfo
-    )
-
-    res.send({
-      data: {
+      const {
+        transaction_details: transactionDetails,
+        additional_info: additionalInfo,
+        metadata,
         status
-      }
-    })
+      } = transactionData
+
+      console.log(
+        response,
+        transactionData,
+        metadata,
+        transactionDetails,
+        additionalInfo
+      )
+
+      res.send({
+        data: {
+          status
+        }
+      })
+    } catch (error) {
+      handlerHttpError({
+        res,
+        error: 'PAYMENT_ERROR',
+        errorRaw: 'Error to pay product'
+      })
+    }
   }
 }

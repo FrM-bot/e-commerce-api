@@ -12,7 +12,7 @@ export class PaymentController {
     this.#Model = Model
   }
 
-  pay = async ({ params, query }: Request, res: Response): Promise<void | Response<any, Record<string, any>>> => {
+  pay = async ({ params, query }: Request, res: Response) => {
     const { id, method } = params
     const paymentMethod = method.toLocaleLowerCase()
     const quantity = Number(query.quantity) ?? 1
@@ -117,7 +117,11 @@ export class PaymentController {
       }
 
       if (!url) {
-        handlerHttpError({ res, error: 'ERROR_PAY_PRODUCTS', status: 400 }); return
+        handlerHttpError({
+          res,
+          error: 'ERROR_PAY_PRODUCTS',
+          status: 400
+        }); return
       }
 
       res.send({
