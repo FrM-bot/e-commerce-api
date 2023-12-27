@@ -10,4 +10,6 @@ export type CartModel = typeof Models.cart
 
 export type AddressModel = typeof Models.address
 
+export type PaymentModel = typeof Models.payment
+
 export type DatabaseModels = typeof Models

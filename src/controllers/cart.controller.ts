@@ -41,7 +41,7 @@ export class CartController {
       return
     }
 
-    const cartItem = user.cart.find(({ id }) => itemId === id)
+    const cartItem = user.cart.find(({ stockId }) => stockId === itemId)
 
     if (cartItem) {
       return res.json({
@@ -50,7 +50,7 @@ export class CartController {
     }
 
     try {
-      const updatedUser = await this.#Model.cart.add({
+      const updatedCart = await this.#Model.cart.add({
         data: {
           quantity,
           stockId: itemId,
@@ -58,7 +58,7 @@ export class CartController {
         }
       })
       res.json({
-        data: updatedUser
+        data: updatedCart
       })
     } catch (error) {
       handlerHttpError({
@@ -109,7 +109,7 @@ export class CartController {
     try {
       const updatedCart = await this.#Model.cart.update({
         where: {
-          stockId: cartItem.id
+          id: cartItem.id
         },
         data: {
           quantity: quantity > cartItem.quantity ? cartItem.quantity : quantity
@@ -152,7 +152,7 @@ export class CartController {
       }); return
     }
 
-    const cartItem = user.cart.find(({ id }) => itemId === id)
+    const cartItem = user.cart.find(({ stockId }) => stockId === itemId)
 
     if (!cartItem) {
       return res.json({
@@ -161,10 +161,9 @@ export class CartController {
     }
 
     const { id } = cartItem
-
     try {
       await this.#Model.cart.remove({
-        stockId: id
+        id
       })
 
       res.json({

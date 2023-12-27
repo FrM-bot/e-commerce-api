@@ -26,13 +26,13 @@ class CartModel {
   }
 
   remove = async ({
-    stockId
+    id
   }: {
-    stockId: string
+    id: string
   }) => {
     const cart = await this.#db.cart.delete({
       where: {
-        stockId
+        id
       }
     })
 
@@ -45,7 +45,7 @@ class CartModel {
     where,
     data
   }: {
-    where: { stockId: string }
+    where: { id: string }
     data: { quantity: number }
   }) => {
     const cart = await this.#db.cart.update({

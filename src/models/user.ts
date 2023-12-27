@@ -8,11 +8,9 @@ class UserModel {
     this.#db = db
   }
 
-  getBy = async ({ email }: { email: string }) => {
+  getBy = async (where: { email: string } | { id: string }) => {
     const user = await this.#db.user.findUnique({
-      where: {
-        email
-      },
+      where,
       include: {
         Payment: {
           select: {
@@ -46,7 +44,7 @@ class UserModel {
       surname: user?.surname,
       favoritesIds: user?.favoritesIds,
       cart: user?.Cart.map(({ Stock, quantity, stockId, id }) => ({
-        id: stockId,
+        id,
         quantity,
         images: Stock.images,
         productId: Stock.Product.id,
@@ -55,7 +53,8 @@ class UserModel {
         size: Stock.size,
         color: Stock.color,
         price: Stock.price,
-        name: Stock.Product.name
+        name: Stock.Product.name,
+        stockId
       })),
       addresses: user?.Address.map(({ id, addressType, city, code, description, floor, mainStreet, phone, state, streetNumber, streetOne, streetTwo }) => ({
         id,
@@ -90,11 +89,9 @@ class UserModel {
     }
   }
 
-  exist = async ({ email }: { email: string }) => {
+  exist = async (where: { email: string } | { id: string }) => {
     const user = await this.#db.user.findUnique({
-      where: {
-        email
-      }
+      where
     })
 
     return {

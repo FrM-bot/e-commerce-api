@@ -13,8 +13,6 @@ export class WebhooksController {
   post = async ({ body }: Request, res: Response) => {
     const { data, type } = body
 
-    console.log({ body })
-
     if (type === 'test') {
       return res.send({
         data: {
@@ -31,6 +29,9 @@ export class WebhooksController {
       })
       return
     }
+
+    let transactionData
+
     try {
       const options = {
         headers: {
@@ -42,34 +43,67 @@ export class WebhooksController {
         options
       )
 
-      const transactionData = await response.data
-
-      const {
-        transaction_details: transactionDetails,
-        additional_info: additionalInfo,
-        metadata,
-        status
-      } = transactionData
-
-      console.log(
-        response,
-        transactionData,
-        metadata,
-        transactionDetails,
-        additionalInfo
-      )
-
-      res.send({
-        data: {
-          status
-        }
-      })
-    } catch (error) {
+      transactionData = await response.data
+    } catch (errorRaw) {
       handlerHttpError({
         res,
         error: 'PAYMENT_ERROR',
-        errorRaw: 'Error to pay product'
-      })
+        errorRaw
+      }); return
     }
+
+    const {
+      transaction_details: transactionDetails,
+      additional_info: additionalInfo,
+      metadata,
+      status
+    } = transactionData
+
+    console.log({
+      transactionData,
+      metadata,
+      transactionDetails,
+      additionalInfo,
+      status
+    })
+
+    let user
+
+    try {
+      user = await this.#Model.user.getBy({ id: transactionData?.metadata?.userId })
+      if (!user?.cart || !user.id) {
+        handlerHttpError({
+          res,
+          error: 'USER_NOT_FOUND',
+          errorRaw: 'User doesn\'t exist'
+        }); return
+      }
+
+      for (const item of user.cart) {
+        await this.#Model.stock.updateQuantity({ where: { id: item.stockId }, quantity: { decrement: item.quantity } })
+        await this.#Model.cart.remove({ id: item.id })
+        await this.#Model.payment.register({ data: { amount: item.price, receiptId: transactionData.id, userId: user.id, quantity: item.quantity, stockId: item.stockId } })
+      }
+    } catch (errorRaw) {
+      handlerHttpError({
+        res,
+        error: 'PAYMENT_ERROR',
+        errorRaw
+      }); return
+    }
+
+    console.log({
+      transactionData,
+      metadata,
+      transactionDetails,
+      additionalInfo,
+      status
+    })
+
+    res.send({
+      data: {
+        status
+      }
+    })
   }
 }

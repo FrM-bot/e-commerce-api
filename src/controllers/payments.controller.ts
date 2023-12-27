@@ -61,7 +61,7 @@ export class PaymentController {
 
     const user = await this.#Model.user.getBy({ email: payload?.email })
 
-    if (!user) {
+    if (!user?.id) {
       handlerHttpError({
         res,
         error: 'ERROR_GET_USER',
@@ -100,10 +100,15 @@ export class PaymentController {
     try {
       let url: string | undefined
 
+      const metadata = {
+        ...selectedAddress,
+        userId: user.id
+      }
+
       if (METHODS.MERCADOPAGO === method) {
         const items = cartItems.map(({ id, name: title, images, price, quantity }) => ({ id, title, description: title, picture_url: images.at(0) ?? '', quantity, unit_price: price }))
 
-        const mercadopago = await Payment.mercadopago.payMany({ items, metadata: selectedAddress })
+        const mercadopago = await Payment.mercadopago.payMany({ items, metadata })
 
         url = mercadopago.init_point
       }
@@ -111,7 +116,7 @@ export class PaymentController {
       if (METHODS.STRIPE === method) {
         const items = cartItems.map(({ quantity, id, name, price, images }) => ({ id, name, quantity, images, unitAmount: price }))
 
-        const stripe = await Payment.stripe.payMany({ items, metadata: selectedAddress })
+        const stripe = await Payment.stripe.payMany({ items, metadata })
 
         url = stripe.url ?? ''
       }

@@ -4,6 +4,7 @@ import { User } from './user.js'
 import { Cart } from './cart.js'
 import { Address } from './address.js'
 import { Category } from './category.js'
+import { Payment } from './payment.js'
 
 const Models = {
   item: Item,
@@ -11,7 +12,8 @@ const Models = {
   user: User,
   cart: Cart,
   address: Address,
-  category: Category
+  category: Category,
+  payment: Payment
 }
 
 export { Models }

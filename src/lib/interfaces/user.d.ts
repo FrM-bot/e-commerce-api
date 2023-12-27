@@ -1,4 +1,4 @@
-import { type Auth } from './auth.interface'
+import { type Auth } from './auth.js'
 
 export interface User extends Auth {
   name: string

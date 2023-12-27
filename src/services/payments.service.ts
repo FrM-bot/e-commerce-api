@@ -59,7 +59,7 @@ class StripeService {
       unitAmount: number
       images: string[]
     }>
-    metadata: any
+    metadata: Record<string, string | number | null>
   }) {
     const session = await this.#service.checkout.sessions.create({
       line_items: items.map(({ images, name, quantity, unitAmount }) => ({
@@ -174,7 +174,7 @@ class MercadoPago {
     return responseData
   }
 
-  payMany = async ({ items, email, metadata, applicationFee }: { items: Array<{ id: string, title: string, description: string, picture_url: string, quantity: number, unit_price: number }>, email?: string, metadata?: Record<string, string | number | null> | undefined, applicationFee?: number }) => {
+  payMany = async ({ items, email, metadata, applicationFee }: { items: Array<{ id: string, title: string, description: string, picture_url: string, quantity: number, unit_price: number }>, email?: string, metadata?: Record<string, string | number | null | undefined> | undefined, applicationFee?: number }) => {
     const transactionAmount = items.reduce((total, { unit_price: unitPrice }) => (total + unitPrice), 0)
 
     const body = {

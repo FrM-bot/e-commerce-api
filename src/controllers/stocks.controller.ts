@@ -92,7 +92,7 @@ export class StockController {
         handlerHttpError({ res, error: 'ERROR_VALIDATE_ADDRESS', errorRaw: result }); return
       }
 
-      const data = await this.Model.stock.edit({ id, input: result.data })
+      const data = await this.Model.stock.update({ id, input: result.data })
 
       res.send({
         data
@@ -126,7 +126,7 @@ export class StockController {
       const imagesToSave = stock.images?.filter(
         (imageUrl: string) => !imagesToRemove?.includes(imageUrl)
       )
-      await this.Model.stock.edit({
+      await this.Model.stock.update({
         id,
         input: {
           images: imagesToSave
@@ -163,7 +163,7 @@ export class StockController {
       })
       await Files.deleteMany({ filePaths })
 
-      const data = await this.Model.stock.edit({
+      const data = await this.Model.stock.update({
         id,
         input: {
           images: stock.images?.concat(images)

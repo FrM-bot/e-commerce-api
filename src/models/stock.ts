@@ -101,7 +101,7 @@ class StockModel {
     }
   }
 
-  edit = async ({
+  update = async ({
     id,
     input
   }: {
@@ -154,6 +154,20 @@ class StockModel {
         status: false
       }
     }
+  }
+
+  updateQuantity = async ({
+    where,
+    quantity
+  }: { where: { id: string }, quantity: { increment: number } | { decrement: number } }) => {
+    const stock = await this.#db.stock.update({
+      where,
+      data: {
+        quantity
+      }
+    })
+
+    return stock
   }
 }
 export const Stock = new StockModel({ db })
