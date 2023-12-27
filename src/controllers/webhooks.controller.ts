@@ -82,7 +82,7 @@ export class WebhooksController {
       for (const item of user.cart) {
         await this.#Model.stock.updateQuantity({ where: { id: item.stockId }, quantity: { decrement: item.quantity } })
         await this.#Model.cart.remove({ id: item.id })
-        await this.#Model.payment.register({ data: { amount: item.price, receiptId: transactionData.id, userId: user.id, quantity: item.quantity, stockId: item.stockId } })
+        await this.#Model.payment.register({ data: { amount: item.price, receiptId: transactionDetails.id, userId: user.id, quantity: item.quantity, stockId: item.stockId } })
       }
     } catch (errorRaw) {
       handlerHttpError({

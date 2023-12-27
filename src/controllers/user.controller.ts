@@ -13,7 +13,7 @@ const createAccountButton = ({ href, text }: { href: string, text: string }) =>
 
 export class UserController {
   readonly #Model
-  providers: string[]
+  providers: PROVIDER[]
   constructor ({ Model }: { Model: ModelsRequired }) {
     this.#Model = Model
     this.providers = [PROVIDER.GOOGLE, PROVIDER.PASSWORD]
