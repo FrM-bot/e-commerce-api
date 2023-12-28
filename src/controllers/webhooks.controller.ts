@@ -69,7 +69,7 @@ export class WebhooksController {
     let user
 
     try {
-      user = await this.#Model.user.getBy({ id: transactionData?.metadata?.userId })
+      user = await this.#Model.user.getBy({ id: metadata?.user_id })
       if (!user?.cart || !user.id) {
         handlerHttpError({
           res,
