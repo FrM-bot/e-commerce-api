@@ -20,7 +20,7 @@
     "API",
     "E-commerce"
   ],
-  "author": "",
+  "author": "FrM-bot",
   "license": "ISC",
   "dependencies": {
     "@azure/storage-blob": "12.17.0",
